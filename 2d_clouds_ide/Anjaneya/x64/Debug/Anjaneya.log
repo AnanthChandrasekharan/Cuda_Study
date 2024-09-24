@@ -1,0 +1,5 @@
+﻿  OGLTemplate.cpp
+C:\Users\anant\OneDrive\Documents\Anjaneya\vmath.h(996,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'OGLTemplate.cpp')
+  
+  Anjaneya.vcxproj -> C:\Users\anant\OneDrive\Documents\Anjaneya\x64\Debug\Anjaneya.exe
