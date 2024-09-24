@@ -1,0 +1,37 @@
+#version 460 core
+
+// Input vertex attributes
+in vec4 vPosition;         // Vertex position
+in float heightAttribute; // Height attribute (assuming it's a float attribute)
+in vec2 slopeAttribute;   // Slope attribute (assuming it's a vec2 attribute)
+
+// Output varying variables
+out vec3 eyeSpacePos;
+out vec3 worldSpaceNormal;
+out vec3 eyeSpaceNormal;
+
+// Uniform variables
+float heightScale = 0.09;
+vec2 size = vec2(256.0, 256.0);
+uniform mat4 u_mvpMatrix;
+
+void main()
+{
+    float height = heightAttribute;
+    vec2 slope = slopeAttribute;
+
+    // Calculate surface normal from slope for shading
+    vec3 normal = normalize(cross(vec3(0.0, slope.y * heightScale, 2.0 / size.x), vec3(2.0 / size.y, slope.x * heightScale, 0.0)));
+    worldSpaceNormal = normal;
+
+    // Calculate position and transform to homogeneous clip space
+    vec4 pos = vec4(vPosition.x, height * heightScale, vPosition.z, 1.0);
+    gl_Position = u_mvpMatrix * pos;
+    
+    // Transform to eye space
+    eyeSpacePos = (u_mvpMatrix * vPosition).xyz;
+    
+    // Transform normal to eye space (using inverse-transpose of model-view matrix)
+    eyeSpaceNormal = normalize(mat3(transpose(inverse(u_mvpMatrix))) * normal);
+}
+

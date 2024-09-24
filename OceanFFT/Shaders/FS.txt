@@ -1,0 +1,31 @@
+#version 460 core
+
+// Input varying variables (interpolated from vertex shader)
+in vec3 eyeSpacePos;
+in vec3 worldSpaceNormal;
+in vec3 eyeSpaceNormal;
+
+// Uniform variables
+uniform vec4 deepColor;
+uniform vec4 shallowColor;
+uniform vec4 skyColor;
+uniform vec3 lightDir;
+
+out vec4 fragColor; // Output fragment color
+
+void main()
+{
+    vec3 eyeVector = normalize(eyeSpacePos);
+    vec3 eyeSpaceNormalVector = normalize(eyeSpaceNormal);
+    vec3 worldSpaceNormalVector = normalize(worldSpaceNormal);
+
+    float facing = max(0.0, dot(eyeSpaceNormalVector, -eyeVector));
+    float fresnel = pow(1.0 - facing, 5.0); // Fresnel approximation
+    float diffuse = max(0.0, dot(worldSpaceNormalVector, lightDir));
+
+    // Calculate water color based on depth
+    vec4 waterColor = deepColor;
+
+    // Combine water color with lighting and Fresnel effects
+    fragColor = waterColor * diffuse + skyColor * fresnel;
+}
